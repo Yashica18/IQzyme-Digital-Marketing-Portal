@@ -1,0 +1,319 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Secure user profile credentials and enterprise context for active clients.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique authenticated identifier for the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The corporate email address of the enterprise partner."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Full name of the corporate liaison."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "Enterprise organization or laboratory name."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Corporate liaison contact telephone number."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["client", "admin", "analyst"],
+          "description": "Role classification governing page access parameters."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating profile creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last profile update."
+        }
+      },
+      "required": ["userId", "email", "displayName"]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Contact form submissions filed by visitors or clients seeking support.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The authenticated identifier of the sender (or 'anonymous')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the contact person."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email address."
+        },
+        "projectNo": {
+          "type": "string",
+          "description": "Optionally supplied active project file reference number."
+        },
+        "message": {
+          "type": "string",
+          "description": "The custom message or enquiry payload."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of message transmission."
+        }
+      },
+      "required": ["userId", "name", "email", "message", "createdAt"]
+    },
+    "ConsultationRequest": {
+      "title": "Consultation Request",
+      "description": "Confidential advisory scheduling parameters filed by clients.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID of the client who initiated the booking."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The company name requesting consultation."
+        },
+        "consultationDate": {
+          "type": "string",
+          "description": "Date requested for the advisory meeting."
+        },
+        "timeSlot": {
+          "type": "string",
+          "description": "Selected hourly meeting time slot."
+        },
+        "serviceStream": {
+          "type": "string",
+          "description": "The technical compliance stream of the request."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Operational description or scope guidelines."
+        },
+        "clientEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Primary communication email."
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Liaison name."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Liaison phone number."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending_confirmation", "confirmed", "completed", "cancelled"],
+          "description": "Current status of the consultation."
+        },
+        "urgency": {
+          "type": "string",
+          "description": "Urgency classification requested for the advisory audit."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating booking creation."
+        }
+      },
+      "required": ["userId", "companyName", "consultationDate", "timeSlot", "serviceStream", "clientEmail", "clientName", "phone", "status", "urgency", "createdAt"]
+    },
+    "NewsletterSubscriber": {
+      "title": "Newsletter Subscriber",
+      "description": "Subscription records for the IQzyme regulatory brief newsletter.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email subscribed to the dispatch."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating subscription initiation."
+        }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "Blog": {
+      "title": "Blog Post",
+      "description": "Regulatory intelligence articles and IQzyme press updates.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the blog post."
+        },
+        "slug": {
+          "type": "string",
+          "description": "Unique URL-friendly slug."
+        },
+        "content": {
+          "type": "string",
+          "description": "Rich content or markdown article body."
+        },
+        "author": {
+          "type": "string",
+          "description": "Name of the regulatory advisor author."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short excerpt summarizing the blog post."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp indicating publication time."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Compliance or regulatory category tags."
+        }
+      },
+      "required": ["title", "slug", "content", "author", "summary", "publishedAt"]
+    },
+    "Service": {
+      "title": "Compliance Service",
+      "description": "Advisory and regulatory services offered by IQzyme.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Name of the compliance service."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed capability description."
+        },
+        "stream": {
+          "type": "string",
+          "description": "The regulatory division stream identifier."
+        },
+        "icon": {
+          "type": "string",
+          "description": "Lucide icon component name key."
+        },
+        "features": {
+          "type": "array",
+          "description": "Key deliverables of the service."
+        }
+      },
+      "required": ["title", "description", "stream", "icon"]
+    },
+    "Course": {
+      "title": "Compliance Course",
+      "description": "Educational training modules for regulatory compliance.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the training course."
+        },
+        "description": {
+          "type": "string",
+          "description": "Syllabus outline and learning goals."
+        },
+        "instructor": {
+          "type": "string",
+          "description": "Assigned lead instructor."
+        },
+        "duration": {
+          "type": "string",
+          "description": "Duration (e.g., 8 Hours, 2 Days)."
+        },
+        "lectures": {
+          "type": "integer",
+          "description": "Count of lectures/sessions."
+        }
+      },
+      "required": ["title", "description", "instructor", "duration", "lectures"]
+    },
+    "Testimonial": {
+      "title": "Client Testimonial",
+      "description": "Validated client feedback and success affirmations.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the testifying liaison."
+        },
+        "role": {
+          "type": "string",
+          "description": "Professional designation of the liaison."
+        },
+        "company": {
+          "type": "string",
+          "description": "Validated medical device organization."
+        },
+        "text": {
+          "type": "string",
+          "description": "Verbatim endorsement text."
+        },
+        "rating": {
+          "type": "integer",
+          "description": "Star rating metric (e.g., 5)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp of feedback."
+        }
+      },
+      "required": ["name", "role", "company", "text", "rating", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "Secure user profiles keyed by Firebase Auth UID."
+    },
+    "contactMessages/{messageId}": {
+      "schema": { "$ref": "ContactMessage" },
+      "description": "Submissions filed from the contact form."
+    },
+    "consultationRequests/{requestId}": {
+      "schema": { "$ref": "ConsultationRequest" },
+      "description": "Requested expert advisory consultation sessions."
+    },
+    "newsletterSubscribers/{subscriberId}": {
+      "schema": { "$ref": "NewsletterSubscriber" },
+      "description": "Email newsletter dispatch enrollment records."
+    },
+    "blogs/{blogId}": {
+      "schema": { "$ref": "Blog" },
+      "description": "Regulatory intelligence articles."
+    },
+    "services/{serviceId}": {
+      "schema": { "$ref": "Service" },
+      "description": "IQzyme digital/regulatory services catalogs."
+    },
+    "courses/{courseId}": {
+      "schema": { "$ref": "Course" },
+      "description": "Medical compliance regulatory educational modules."
+    },
+    "testimonials/{testimonialId}": {
+      "schema": { "$ref": "Testimonial" },
+      "description": "Validated enterprise client feedback."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "IQzyme Digital & Compliance Portal",
+  "description": "Explore IQzyme's innovative digital marketing and compliance solutions tailored for rapid regulatory growth, CDSCO licensing, CE marking, Quality management and stellar visibility.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

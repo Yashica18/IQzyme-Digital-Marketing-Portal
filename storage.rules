@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is signed in
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if the path belongs to the user
+    function isUserFolder(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Match all files under user folders
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if isUserFolder(userId);
+    }
+
+    // Match public assets or specific regulatory uploads
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isSignedIn(); // Only logged-in users can write to public assets
+    }
+  }
+}

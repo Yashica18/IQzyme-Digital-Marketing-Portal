@@ -1,0 +1,203 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // GLOBAL Safety Net
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ==========================================
+    // GLOBAL Helper Functions
+    // ==========================================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             request.auth.token.email_verified == true && 
+             request.auth.token.email == "yashicajindal1806@gmail.com";
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // ==========================================
+    // ENTITY VALIDATORS
+    // ==========================================
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['userId', 'email', 'displayName', 'companyName', 'phone', 'role', 'createdAt', 'updatedAt']) &&
+             data.keys().size() == 8 &&
+             data.userId is string && data.userId.size() <= 128 &&
+             data.userId == request.auth.uid &&
+             data.email is string && data.email.size() <= 128 &&
+             data.displayName is string && data.displayName.size() <= 128 &&
+             data.companyName is string && data.companyName.size() <= 128 &&
+             data.phone is string && data.phone.size() <= 32 &&
+             data.role is string && (data.role == 'client' || data.role == 'analyst' || data.role == 'admin') &&
+             data.createdAt == request.time &&
+             data.updatedAt == request.time;
+    }
+
+    function isValidContactMessage(data) {
+      return data.keys().hasAll(['userId', 'name', 'email', 'projectNo', 'message', 'createdAt']) &&
+             data.keys().size() == 6 &&
+             data.userId is string && data.userId.size() <= 128 &&
+             data.name is string && data.name.size() <= 128 &&
+             data.email is string && data.email.size() <= 128 &&
+             data.projectNo is string && data.projectNo.size() <= 128 &&
+             data.message is string && data.message.size() <= 10000 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidConsultationRequest(data) {
+      return data.keys().hasAll(['userId', 'companyName', 'consultationDate', 'timeSlot', 'serviceStream', 'notes', 'clientEmail', 'clientName', 'phone', 'status', 'urgency', 'createdAt']) &&
+             data.keys().size() == 12 &&
+             data.userId is string && data.userId.size() <= 128 &&
+             data.companyName is string && data.companyName.size() <= 128 &&
+             data.consultationDate is string && data.consultationDate.size() <= 64 &&
+             data.timeSlot is string && data.timeSlot.size() <= 64 &&
+             data.serviceStream is string && data.serviceStream.size() <= 128 &&
+             data.notes is string && data.notes.size() <= 2000 &&
+             data.clientEmail is string && data.clientEmail.size() <= 128 &&
+             data.clientName is string && data.clientName.size() <= 128 &&
+             data.phone is string && data.phone.size() <= 32 &&
+             data.status is string && (data.status == 'pending_confirmation' || data.status == 'confirmed' || data.status == 'completed' || data.status == 'cancelled') &&
+             data.urgency is string && data.urgency.size() <= 128 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidNewsletterSubscriber(data) {
+      return data.keys().hasAll(['email', 'createdAt']) &&
+             data.keys().size() == 2 &&
+             data.email is string && data.email.size() <= 128 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidBlog(data) {
+      return data.keys().hasAll(['title', 'slug', 'content', 'author', 'summary', 'publishedAt', 'tags']) &&
+             data.keys().size() == 7 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.slug is string && data.slug.size() <= 200 &&
+             data.content is string && data.content.size() <= 100000 &&
+             data.author is string && data.author.size() <= 128 &&
+             data.summary is string && data.summary.size() <= 1000 &&
+             data.publishedAt is timestamp &&
+             data.tags is list && data.tags.size() <= 10;
+    }
+
+    function isValidService(data) {
+      return data.keys().hasAll(['title', 'description', 'stream', 'icon', 'features']) &&
+             data.keys().size() == 5 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.description is string && data.description.size() <= 2000 &&
+             data.stream is string && data.stream.size() <= 128 &&
+             data.icon is string && data.icon.size() <= 128 &&
+             data.features is list && data.features.size() <= 20;
+    }
+
+    function isValidCourse(data) {
+      return data.keys().hasAll(['title', 'description', 'instructor', 'duration', 'lectures']) &&
+             data.keys().size() == 5 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.description is string && data.description.size() <= 2000 &&
+             data.instructor is string && data.instructor.size() <= 128 &&
+             data.duration is string && data.duration.size() <= 64 &&
+             data.lectures is int;
+    }
+
+    function isValidTestimonial(data) {
+      return data.keys().hasAll(['name', 'role', 'company', 'text', 'rating', 'createdAt']) &&
+             data.keys().size() == 6 &&
+             data.name is string && data.name.size() <= 128 &&
+             data.role is string && data.role.size() <= 128 &&
+             data.company is string && data.company.size() <= 128 &&
+             data.text is string && data.text.size() <= 2000 &&
+             data.rating is int && data.rating >= 1 && data.rating <= 5 &&
+             data.createdAt == request.time;
+    }
+
+    // ==========================================
+    // COLLECTIONS
+    // ==========================================
+
+    // 1. Users
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().role == 'client';
+      allow update: if isOwner(userId) && 
+                    incoming().updatedAt == request.time && 
+                    incoming().diff(resource.data).affectedKeys().hasOnly(['displayName', 'companyName', 'phone', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // 2. Contact Messages
+    match /contactMessages/{messageId} {
+      allow create: if isValidId(messageId) && isValidContactMessage(incoming());
+      allow read, delete: if isAdmin();
+    }
+
+    // 3. Consultation Requests
+    match /consultationRequests/{requestId} {
+      allow create: if isValidId(requestId) && 
+                    isValidConsultationRequest(incoming()) && 
+                    (isSignedIn() ? incoming().userId == request.auth.uid : incoming().userId == 'anonymous') &&
+                    incoming().status == 'pending_confirmation';
+      allow get: if isAdmin() || (isSignedIn() && (resource.data.userId == request.auth.uid || resource.data.clientEmail == request.auth.token.email));
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (
+                      isSignedIn() && 
+                      resource.data.userId == request.auth.uid &&
+                      resource.data.status != 'completed' &&
+                      resource.data.status != 'cancelled' &&
+                      incoming().diff(resource.data).affectedKeys().hasOnly(['companyName', 'consultationDate', 'timeSlot', 'serviceStream', 'notes', 'clientName', 'clientEmail', 'phone', 'status', 'urgency']) &&
+                      incoming().status == 'cancelled'
+                    );
+      allow delete: if isAdmin();
+    }
+
+    // 4. Newsletter Subscribers
+    match /newsletterSubscribers/{subscriberId} {
+      allow create: if isValidId(subscriberId) && isValidNewsletterSubscriber(incoming());
+      allow read, delete: if isAdmin();
+    }
+
+    // 5. Blogs
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 6. Services
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 7. Courses
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 8. Testimonials
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidTestimonial(incoming());
+      allow update, delete: if isAdmin();
+    }
+  }
+}
