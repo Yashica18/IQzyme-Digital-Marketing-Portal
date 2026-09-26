@@ -8,9 +8,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, Shield, Compass, TrendingUp, Cpu, 
   Layers, Users, CheckCircle, ArrowRight, Star, 
-  MapPin, Award, Activity, Heart, Globe, Play
+  MapPin, Award, Activity, Heart, Globe, Play,
+  Building2, Phone, ExternalLink, Navigation, ShieldCheck, Check, ZoomIn, X
 } from 'lucide-react';
 import { TESTIMONIALS, CASE_STUDIES } from '../data';
+import { INDIA_OUTLINE_PATH } from './IndiaMapPath';
 
 // ==========================================
 // 1. HERO CAROUSEL BLOCK (Discover our solutions)
@@ -200,201 +202,192 @@ export function WhyChooseIQzyme() {
 // ==========================================
 // 3. GLOBAL REACH (map-wide)
 // ==========================================
-export function GlobalReachMap() {
-  const [activeOffice, setActiveOffice] = useState<number | null>(null);
+export function GlobalReachMap({ onNavigate }: { onNavigate?: (path: string) => void }) {
+  const [selectedLocationId, setSelectedLocationId] = useState<string>('delhi');
+  const [hoveredLocationId, setHoveredLocationId] = useState<string | null>(null);
 
-  const offices = [
-    { 
-      city: 'Cochin, Kerala', 
-      type: 'Global HQ & Submissions', 
-      mapX: 172, 
-      mapY: 365,
-      details: 'Our primary operational headquarters, managing international dossiers, clinical trial compliance, and major WHO prequalification submissions.' 
+  const locations = [
+    {
+      id: 'delhi',
+      name: 'New Delhi',
+      x: 203,
+      y: 255,
+      labelAnchor: 'start' as const,
+      labelX: 224,
+      labelY: 255,
+      lineX: 216,
+      lineY: 255,
     },
-    { 
-      city: 'New Delhi', 
-      type: 'CDSCO Liaison Hub', 
-      mapX: 175, 
-      mapY: 110,
-      details: 'Direct, daily on-site liaison with CDSCO HQ, Ministry of Health, and technical review committees for rapid licensing approvals.' 
+    {
+      id: 'surat',
+      name: 'Surat',
+      x: 118,
+      y: 430,
+      labelAnchor: 'end' as const,
+      labelX: 98,
+      labelY: 430,
+      lineX: 104,
+      lineY: 430,
     },
-    { 
-      city: 'Bengaluru', 
-      type: 'Biotech & IVD Support', 
-      mapX: 170, 
-      mapY: 315,
-      details: 'Deep operational support for molecular diagnostics, biotech startups, and specialized performance evaluations inside India’s main tech hub.' 
+    {
+      id: 'mumbai',
+      name: 'Mumbai',
+      x: 112,
+      y: 479,
+      labelAnchor: 'end' as const,
+      labelX: 92,
+      labelY: 479,
+      lineX: 98,
+      lineY: 479,
     },
-    { 
-      city: 'Mumbai', 
-      type: 'West India Compliance', 
-      mapX: 125, 
-      mapY: 240,
-      details: 'Managing CDSCO West zone audits, medical importer registration files, and active post-market surveillance coordination.' 
+    {
+      id: 'bengaluru',
+      name: 'Bengaluru',
+      x: 211,
+      y: 623,
+      labelAnchor: 'start' as const,
+      labelX: 232,
+      labelY: 623,
+      lineX: 224,
+      lineY: 623,
     },
-    { 
-      city: 'Coimbatore', 
-      type: 'Medtech Engineering', 
-      mapX: 182, 
-      mapY: 350,
-      details: 'Dedicated validation of active medical devices, software-as-a-medical-device (SaMD) quality files, and electrical safety standards.' 
+    {
+      id: 'coimbatore',
+      name: 'Coimbatore',
+      x: 198,
+      y: 669,
+      labelAnchor: 'start' as const,
+      labelX: 220,
+      labelY: 669,
+      lineX: 212,
+      lineY: 669,
     },
-    { 
-      city: 'Surat', 
-      type: 'SME Onboarding & Turnkey', 
-      mapX: 120, 
-      mapY: 210,
-      details: 'Cleanroom manufacturing facility design engineering, HVAC commissioning support, and turnkey WHO-GMP licensing for state-wide SMEs.' 
-    }
+    {
+      id: 'cochin',
+      name: 'Cochin (Kerala)',
+      x: 192,
+      y: 695,
+      labelAnchor: 'end' as const,
+      labelX: 172,
+      labelY: 695,
+      lineX: 178,
+      lineY: 695,
+    },
   ];
 
+  const activeId = hoveredLocationId || selectedLocationId;
+
   return (
-    <div id="global-reach-map-container" className="bg-white border border-brand-cloudy/30 rounded-xl p-6 md:p-8 shadow-sm space-y-6">
-      <div className="max-w-2xl mx-auto text-center space-y-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#00C4B7]">National Infrastructure, Global Excellence</span>
-        <h3 className="font-display font-medium text-2xl text-brand-blue">6 Integrated Offices Across India</h3>
-        <p className="text-xs text-brand-dusk">
-          We maintain physical consulting offices and direct liaison channels with central drug control authorities, state bodies, and international testing facilities to support your product’s lifecycle.
-        </p>
+    <div id="global-reach-map-container" className="space-y-6">
+      {/* India Map Outline Frame */}
+      <div className="w-full flex justify-center py-6 px-4 md:px-8 bg-slate-50/70 border border-brand-cloudy/30 rounded-2xl overflow-hidden shadow-xs">
+        <div className="w-full max-w-[540px] relative">
+          <svg
+            viewBox="0 0 670 780"
+            className="w-full h-auto max-h-[600px] select-none filter drop-shadow-xs"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Outline of the Map of India */}
+            <path
+              d={INDIA_OUTLINE_PATH}
+              fill="#FFFFFF"
+              stroke="#2D3A55"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {/* Clean inner subtle fill */}
+            <path
+              d={INDIA_OUTLINE_PATH}
+              fill="#2D3A55"
+              fillOpacity="0.025"
+              stroke="none"
+            />
+
+            {/* The 6 Specified Locations */}
+            {locations.map((loc) => {
+              const isActive = activeId === loc.id;
+              return (
+                <g
+                  key={loc.id}
+                  className="cursor-pointer"
+                  onClick={() => setSelectedLocationId(loc.id)}
+                  onMouseEnter={() => setHoveredLocationId(loc.id)}
+                  onMouseLeave={() => setHoveredLocationId(null)}
+                >
+                  {/* Subtle connector leader line */}
+                  <line
+                    x1={loc.x}
+                    y1={loc.y}
+                    x2={loc.lineX}
+                    y2={loc.lineY}
+                    stroke={isActive ? '#00C4B7' : '#94A3B8'}
+                    strokeWidth={isActive ? '2' : '1.2'}
+                    strokeDasharray={isActive ? 'none' : '3 2'}
+                  />
+
+                  {/* Pulsing halo */}
+                  <circle
+                    cx={loc.x}
+                    cy={loc.y}
+                    r={isActive ? 12 : 7}
+                    fill={isActive ? '#00C4B7' : '#2D3A55'}
+                    fillOpacity={isActive ? 0.35 : 0.15}
+                  />
+
+                  {/* Core pin dot */}
+                  <circle
+                    cx={loc.x}
+                    cy={loc.y}
+                    r={isActive ? 5.5 : 4}
+                    fill={isActive ? '#00C4B7' : '#2D3A55'}
+                    stroke="#FFFFFF"
+                    strokeWidth="2"
+                  />
+
+                  {/* Location Name Label (with no description) */}
+                  <text
+                    x={loc.labelX}
+                    y={loc.labelY + 4}
+                    textAnchor={loc.labelAnchor}
+                    className={`font-sans tracking-wide select-none transition-colors ${
+                      isActive
+                        ? 'fill-brand-blue font-bold text-[16px]'
+                        : 'fill-brand-blue/85 font-medium text-[14px]'
+                    }`}
+                  >
+                    {loc.name}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-brand-blue/5 border border-brand-cloudy/20 rounded-lg p-4 md:p-6 overflow-hidden">
-        {/* Left Side: Indian Map Vector Container */}
-        <div className="lg:col-span-7 flex justify-center relative">
-          <div className="w-full max-w-[400px] h-[420px] relative">
-            <svg viewBox="0 0 450 450" className="w-full h-full text-brand-blue" xmlns="http://www.w3.org/2000/svg">
-              {/* Latitude/Longitude grid lines for tactical tech design */}
-              <line x1="50" y1="100" x2="400" y2="100" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 3" />
-              <line x1="50" y1="200" x2="400" y2="200" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 3" />
-              <line x1="50" y1="300" x2="400" y2="300" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 3" />
-              <line x1="100" y1="50" x2="100" y2="400" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 3" />
-              <line x1="200" y1="50" x2="200" y2="400" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 3" />
-              <line x1="300" y1="50" x2="300" y2="400" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 3" />
-
-              {/* Indian Sea labels */}
-              <text x="60" y="320" className="font-mono text-[9px] font-medium tracking-widest text-brand-dusk/30" fill="currentColor">ARABIAN SEA</text>
-              <text x="290" y="320" className="font-mono text-[9px] font-medium tracking-widest text-brand-dusk/30" fill="currentColor">BAY OF BENGAL</text>
-              <text x="175" y="425" className="font-mono text-[9px] font-medium tracking-widest text-brand-dusk/30" fill="currentColor">INDIAN OCEAN</text>
-
-              {/* Compass Rose accent */}
-              <g transform="translate(370, 50)" className="text-brand-dusk/25" stroke="currentColor" strokeWidth="1" fill="none">
-                <circle cx="0" cy="0" r="16" strokeDasharray="2 2" />
-                <line x1="0" y1="-20" x2="0" y2="20" />
-                <line x1="-20" y1="0" x2="20" y2="0" />
-                <polygon points="0,-12 3,0 0,3" fill="currentColor" opacity="0.4" />
-                <polygon points="0,12 -3,0 0,-3" fill="currentColor" opacity="0.4" />
-                <text x="5" y="-12" className="font-mono text-[8px] font-bold" stroke="none" fill="currentColor">N</text>
-              </g>
-
-              {/* India Silhouette Map Path */}
-              <path 
-                d="M 180,20 L 195,10 L 210,15 L 215,30 L 225,40 L 220,55 L 230,70 L 235,80 L 245,90 L 260,95 L 275,95 L 290,105 L 300,105 L 310,110 L 325,105 L 340,95 L 365,90 L 380,105 L 390,125 L 395,140 L 385,155 L 370,160 L 360,175 L 370,190 L 360,205 L 350,195 L 335,190 L 330,165 L 320,160 L 310,170 L 310,155 L 300,175 L 295,195 L 285,225 L 270,255 L 250,295 L 230,330 L 215,360 L 195,385 L 185,355 L 178,325 L 170,285 L 160,245 L 155,215 L 145,205 L 125,200 L 115,210 L 110,225 L 125,230 L 140,225 L 115,235 L 90,230 L 75,220 L 65,205 L 70,185 L 85,180 L 105,180 L 110,160 L 125,155 L 135,125 L 145,95 L 150,75 L 160,55 L 170,35 Z"
-                className="fill-brand-blue/5 stroke-brand-blue/20 dark:stroke-brand-blue/30"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-
-              {/* Map Pins / Interactive Dots */}
-              {offices.map((office, idx) => {
-                const isActive = activeOffice === idx;
-                return (
-                  <g 
-                    key={idx}
-                    className="cursor-pointer group"
-                    onMouseEnter={() => setActiveOffice(idx)}
-                    onMouseLeave={() => setActiveOffice(null)}
-                  >
-                    {/* Ring highlight animation when active */}
-                    <circle 
-                      cx={office.mapX} 
-                      cy={office.mapY} 
-                      r={isActive ? 14 : 7} 
-                      className={`fill-brand-topaz/20 transition-all duration-300 ${isActive ? 'scale-110' : 'opacity-0 group-hover:opacity-100'}`}
-                    />
-                    
-                    {/* Outer Pulsing Glow */}
-                    <circle 
-                      cx={office.mapX} 
-                      cy={office.mapY} 
-                      r={isActive ? 8 : 4} 
-                      className="fill-[#00C4B7]/40 transition-all duration-300"
-                    />
-
-                    {/* Core Solid Pin */}
-                    <circle 
-                      cx={office.mapX} 
-                      cy={office.mapY} 
-                      r="3.5" 
-                      className={`transition-all duration-300 ${isActive ? 'fill-brand-pear' : 'fill-[#00C4B7]'}`}
-                      stroke="#FFFFFF"
-                      strokeWidth="1"
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
-        </div>
-
-        {/* Right Side: Detailed Info Display Panel */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white border border-brand-cloudy/30 rounded-xl p-5 shadow-sm min-h-[220px] flex flex-col justify-between">
-            <AnimatePresence mode="wait">
-              {activeOffice !== null ? (
-                <motion.div
-                  key={`office-${activeOffice}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="space-y-3"
-                >
-                  <div className="flex items-center gap-2">
-                    <MapPin className="text-[#00C4B7]" size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider text-brand-topaz">Active Location</span>
-                  </div>
-                  <h4 className="font-display font-bold text-lg text-brand-blue">
-                    {offices[activeOffice].city}
-                  </h4>
-                  <p className="text-xs font-semibold text-brand-pear">
-                    {offices[activeOffice].type}
-                  </p>
-                  <p className="text-xs text-brand-dusk leading-relaxed">
-                    {offices[activeOffice].details}
-                  </p>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="default-footprint"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-3 my-auto text-center md:text-left py-4"
-                >
-                  <div className="flex justify-center md:justify-start items-center gap-2">
-                    <MapPin className="text-brand-orange" size={18} />
-                    <span className="text-xs font-bold uppercase tracking-wider text-brand-dusk font-bold">National Network</span>
-                  </div>
-                  <h4 className="font-display font-medium text-base text-brand-blue">
-                    Hover a location to view operations
-                  </h4>
-                  <p className="text-xs text-brand-dusk leading-relaxed">
-                    Our pan-India footprint ensures we have local boots on the ground near key manufacturing zones, testing laboratories, and national drug administration registries.
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="pt-4 border-t border-brand-cloudy/10 flex justify-between items-center text-[10px] text-brand-dusk font-mono">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#00C4B7] animate-pulse" />
-                <span>Regulatory Hubs: 6</span>
-              </div>
-              <div>
-                <span>Audit Success: 100%</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Along with the 6 specified locations just write the name of the location with no description */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        {locations.map((loc) => {
+          const isSelected = activeId === loc.id;
+          return (
+            <button
+              key={loc.id}
+              onClick={() => setSelectedLocationId(loc.id)}
+              onMouseEnter={() => setHoveredLocationId(loc.id)}
+              onMouseLeave={() => setHoveredLocationId(null)}
+              className={`flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl border text-sm transition-all cursor-pointer ${
+                isSelected
+                  ? 'bg-brand-blue text-white border-brand-blue shadow-xs font-semibold'
+                  : 'bg-white text-brand-blue border-brand-cloudy/30 hover:border-[#00C4B7] hover:bg-slate-50 font-normal'
+              }`}
+            >
+              <MapPin size={15} className={isSelected ? 'text-[#00C4B7]' : 'text-brand-dusk'} />
+              <span>{loc.name}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -280,6 +280,71 @@
         }
       },
       "required": ["name", "role", "company", "text", "rating", "createdAt"]
+    },
+    "GenerationLog": {
+      "title": "AI Generation Telemetry Log",
+      "description": "Telemetry logs recording latency, input/output token usage, estimated cost, model engine, and self-critique scores.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "module": { "type": "string" },
+        "engine": { "type": "string" },
+        "inputTokens": { "type": "integer" },
+        "outputTokens": { "type": "integer" },
+        "totalTokens": { "type": "integer" },
+        "latencyMs": { "type": "integer" },
+        "estimatedCostUsd": { "type": "number" },
+        "critiqueScore": { "type": "number" },
+        "disposition": { "type": "string", "enum": ["AUTO_APPROVED", "FLAGGED_FOR_HUMAN_REVIEW", "CRITICAL_DEFECT_REJECTED"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "module", "engine", "latencyMs", "estimatedCostUsd", "timestamp"]
+    },
+    "RegulatoryReviewItem": {
+      "title": "Human Review Queue Item",
+      "description": "High-stakes regulatory items audited by Claude and enqueued for RAC human sign-off.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "generationId": { "type": "string" },
+        "module": { "type": "string" },
+        "deviceTitle": { "type": "string" },
+        "deviceClass": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING_RA_REVIEW", "IN_REVIEW", "APPROVED_WITH_AMENDMENTS", "VERIFIED_AND_SIGNED", "REJECTED_STATUTORY_DEFECT"] },
+        "urgency": { "type": "string", "enum": ["ROUTINE", "HIGH", "CRITICAL"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "module", "deviceTitle", "status", "urgency", "createdAt"]
+    },
+    "SystemDirective": {
+      "title": "Dynamic Learned System Directive",
+      "description": "Continuous feedback loop rules automatically promoted from auditor sign-offs or expert corrections.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "authority": { "type": "string" },
+        "ruleGuidance": { "type": "string" },
+        "active": { "type": "boolean" },
+        "confidenceScore": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "ruleGuidance", "active"]
+    },
+    "RegulatoryFeedback": {
+      "title": "Regulatory Feedback Record",
+      "description": "Feedback, ratings, and expert corrections captured on generated regulatory documentation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "generationId": { "type": "string" },
+        "module": { "type": "string" },
+        "rating": { "type": "integer" },
+        "isHelpful": { "type": "boolean" },
+        "expertCorrection": { "type": "string" },
+        "submittedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "generationId", "module", "rating", "isHelpful", "submittedAt"]
     }
   },
   "firestore": {
@@ -314,6 +379,22 @@
     "testimonials/{testimonialId}": {
       "schema": { "$ref": "Testimonial" },
       "description": "Validated enterprise client feedback."
+    },
+    "generationLogs/{logId}": {
+      "schema": { "$ref": "GenerationLog" },
+      "description": "Observability and cost tracking telemetry records."
+    },
+    "regulatoryReviewQueue/{itemId}": {
+      "schema": { "$ref": "RegulatoryReviewItem" },
+      "description": "Human review queue for high stakes content."
+    },
+    "systemDirectives/{directiveId}": {
+      "schema": { "$ref": "SystemDirective" },
+      "description": "Dynamic learned system rules injected into model prompts."
+    },
+    "regulatoryFeedback/{feedbackId}": {
+      "schema": { "$ref": "RegulatoryFeedback" },
+      "description": "Expert feedback loops for system refinement."
     }
   }
 }

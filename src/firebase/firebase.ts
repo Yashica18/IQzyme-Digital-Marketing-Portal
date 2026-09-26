@@ -1,9 +1,10 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAkvGA4e3ZgYyj7UK2oNMHyiFdwZge75dE",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "quadratic-aquifer-fwjkk.firebaseapp.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "quadratic-aquifer-fwjkk",
+  firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID || "ai-studio-iqzymedigitalmar-79bad091-bc05-486e-9abd-cdb187dc6199",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "quadratic-aquifer-fwjkk.firebasestorage.app",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "148328398597",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:148328398597:web:40e00ca1ed603251b4c16c",

@@ -42,7 +42,7 @@ export default function SEOHandler({ route }: SEOHandlerProps) {
       '@type': 'Organization',
       'name': 'IQZYME Medtech Pvt. Ltd.',
       'url': window.location.origin,
-      'logo': `${window.location.origin}/logo.png`,
+      'logo': `${window.location.origin}/images/IQzyme-logo.jpg`,
       'description': isHomePage
         ? 'IQZYME is a global regulatory affairs, quality management systems and market access consulting firm serving medical device, IVD, digital health, pharmaceutical and cosmetics companies across CDSCO, FDA, EU MDR, IVDR, ISO 13485, MHRA, Health Canada, TGA, PMDA and 50+ jurisdictions.'
         : route.meta.description,

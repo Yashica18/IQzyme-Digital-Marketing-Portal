@@ -51,12 +51,14 @@ export default function Footer({ onNavigate }: FooterProps) {
               onClick={() => handleLinkClick('/')}
               className="flex items-center text-left focus:outline-none group py-1"
             >
-              <img
-                src="/images/iqzyme-logo-darkbg.svg"
-                alt="IQZYME Medtech Pvt. Ltd."
-                className="h-20 w-auto max-h-20 object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-                referrerPolicy="no-referrer"
-              />
+              <div className="bg-white px-3.5 py-2 rounded-lg shadow-sm inline-flex items-center transition-transform duration-200 group-hover:scale-[1.02]">
+                <img
+                  src="/images/IQzyme-logo.jpg"
+                  alt="IQZYME Medtech Pvt. Ltd."
+                  className="h-16 md:h-18 w-auto max-h-20 object-contain"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             </button>
             <p className="text-xs text-brand-cloudy max-w-sm leading-relaxed">
               Premier regulatory consulting firm specializing in medical devices, IVDs, cosmetics, and turnkey facility design. We offer comprehensive, high-precision services from concept to commercialization.

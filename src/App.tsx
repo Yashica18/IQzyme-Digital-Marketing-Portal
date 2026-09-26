@@ -11,7 +11,7 @@ import {
   MapPin, Award, Activity, Heart, Globe, Play, 
   Briefcase, FileText, Check, HelpCircle, ArrowUpRight, Clock,
   DollarSign, BookOpen, UserCheck, Calendar, Info,
-  Navigation, Mail, Phone, Map, ExternalLink, Settings
+  Navigation, Mail, Phone, Map, ExternalLink, Settings, Printer
 } from 'lucide-react';
 
 import { ROUTES, CASE_STUDIES, TESTIMONIALS, OPEN_POSITIONS, BLOG_POSTS, NEWS_ITEMS, EVENTS, FAQS, CORE_VALUES, MILESTONES } from './data';
@@ -29,6 +29,10 @@ import ContactForm from './components/ContactForm';
 import ConsultationForm from './components/ConsultationForm';
 import FirebaseAuthPanel from './components/FirebaseAuthPanel';
 import AdminDashboard from './components/AdminDashboard';
+import RegulatoryRadar from './components/RegulatoryRadar';
+import DynamicInfographics from './components/DynamicInfographics';
+import StrategyGenerator from './components/StrategyGenerator';
+import RegulatoryTriage from './components/RegulatoryTriage';
 import { HeroCarousel, WhyChooseIQzyme, GlobalReachMap, IndustriesWeServe, EngagementProcessSteps, GetStartedTodayCTA, PrimaryCTA, SecondaryCTA, UrgencyCTA } from './components/BlockComponents';
 
 const CONTACT_OFFICES = [
@@ -211,6 +215,17 @@ export default function App() {
   const [seoMetaDescInput, setSeoMetaDescInput] = useState<string>('Expert regulatory services for medical devices & IVD in India. CDSCO registration, WHO Prequalification, QMS, LIMS, turnkey projects. Outperform global standards.');
   const [seoActiveFaqIndex, setSeoActiveFaqIndex] = useState<number | null>(null);
 
+  // Pre-filled consultation context from Living System modules
+  const [prefilledNotes, setPrefilledNotes] = useState<string>('');
+  const [prefilledService, setPrefilledService] = useState<string>('');
+  const [homeLivingTab, setHomeLivingTab] = useState<'triage' | 'radar' | 'infographics' | 'strategy'>('triage');
+
+  const handleStartBookingWithScope = (scope: string, service: string = 'reg') => {
+    setPrefilledNotes(scope);
+    setPrefilledService(service);
+    handleNavigate('/book-consultation');
+  };
+
   return (
     <div id="portal-root-wrapper" className="min-h-screen bg-[#FAF9F5] flex flex-col font-sans antialiased">
       {/* SEO Handler triggers title and schema changes dynamically */}
@@ -273,6 +288,107 @@ export default function App() {
                         Serving Medical Device <span className="text-white/40">•</span> IVD <span className="text-white/40">•</span> Digital Health <span className="text-white/40">•</span> SaMD <span className="text-white/40">•</span> Pharmaceutical <span className="text-white/40">•</span> Cosmetics companies
                       </p>
                     </div>
+                  </div>
+                </section>
+
+                {/* Living Regulatory Intelligence Hub (Interactive Suite) */}
+                <section id="home-living-intelligence-hub" className="space-y-6 text-left">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C4B7] opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00C4B7]"></span>
+                        </span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#00C4B7] font-mono">
+                          Living Regulatory Intelligence Engine
+                        </span>
+                      </div>
+                      <h3 className="font-display font-medium text-2xl md:text-3xl text-brand-blue">
+                        Real-Time Global Intelligence &amp; Dynamic Pathways
+                      </h3>
+                      <p className="text-xs md:text-sm text-brand-dusk max-w-2xl leading-relaxed">
+                        Rather than static web pages, IQzyme runs an autonomous regulatory watch &amp; dynamic modeling engine. Run statutory triages, track FDA/EU/CDSCO shifts, generate comparative submission Gantts, and produce audit-grade strategy playbooks on demand.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => handleNavigate('/regulatory-radar')}
+                        className="px-3.5 py-2 bg-brand-blue text-white rounded-lg text-xs font-semibold hover:bg-brand-blue/90 transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>Open Full Radar Watchdog</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Interactive Tab Switcher */}
+                  <div className="flex flex-wrap gap-2 p-1.5 bg-brand-blue/5 border border-brand-cloudy/25 rounded-xl">
+                    <button
+                      onClick={() => setHomeLivingTab('triage')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                        homeLivingTab === 'triage'
+                          ? 'bg-white text-brand-blue shadow-sm border border-brand-cloudy/30'
+                          : 'text-brand-dusk hover:text-brand-blue'
+                      }`}
+                    >
+                      <Sparkles size={14} className="text-[#00C4B7]" />
+                      <span>Statutory Triage Navigator</span>
+                    </button>
+
+                    <button
+                      onClick={() => setHomeLivingTab('radar')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                        homeLivingTab === 'radar'
+                          ? 'bg-white text-brand-blue shadow-sm border border-brand-cloudy/30'
+                          : 'text-brand-dusk hover:text-brand-blue'
+                      }`}
+                    >
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C4B7] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00C4B7]"></span>
+                      </span>
+                      <span>Live Regulatory Radar</span>
+                    </button>
+
+                    <button
+                      onClick={() => setHomeLivingTab('infographics')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                        homeLivingTab === 'infographics'
+                          ? 'bg-white text-brand-blue shadow-sm border border-brand-cloudy/30'
+                          : 'text-brand-dusk hover:text-brand-blue'
+                      }`}
+                    >
+                      <span>Dynamic Pathways &amp; ISO 14971</span>
+                    </button>
+
+                    <button
+                      onClick={() => setHomeLivingTab('strategy')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                        homeLivingTab === 'strategy'
+                          ? 'bg-white text-brand-blue shadow-sm border border-brand-cloudy/30'
+                          : 'text-brand-dusk hover:text-brand-blue'
+                      }`}
+                    >
+                      <span>AI Strategy Playbook</span>
+                    </button>
+                  </div>
+
+                  {/* Active Living Tab Content */}
+                  <div className="pt-2">
+                    {homeLivingTab === 'triage' && (
+                      <RegulatoryTriage onApplyToBooking={(scope) => handleStartBookingWithScope(scope, 'reg')} />
+                    )}
+                    {homeLivingTab === 'radar' && (
+                      <RegulatoryRadar />
+                    )}
+                    {homeLivingTab === 'infographics' && (
+                      <DynamicInfographics />
+                    )}
+                    {homeLivingTab === 'strategy' && (
+                      <StrategyGenerator onApplyToBooking={(scope) => handleStartBookingWithScope(scope, 'reg')} />
+                    )}
                   </div>
                 </section>
 
@@ -487,12 +603,11 @@ export default function App() {
 
                 {/* Global Reach Map (Indian map location pointers) */}
                 <section id="home-block-global" className="space-y-6 text-left bg-white border border-brand-cloudy/30 p-8 rounded-2xl shadow-sm">
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#00C4B7]">Our Nationwide Footprint</span>
-                    <h3 className="font-display font-medium text-2xl text-brand-blue">6 Offices Across the Indian Map</h3>
-                    <p className="text-xs text-brand-dusk">Unified national reach combined with local licensing intimacy.</p>
+                  <div className="space-y-1">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#00C4B7]">Nationwide Presence</span>
+                    <h3 className="font-display font-medium text-2xl text-brand-blue">6 Office Locations Across India</h3>
                   </div>
-                  <GlobalReachMap />
+                  <GlobalReachMap onNavigate={handleNavigate} />
                 </section>
 
                 {/* Final CTA Band */}
@@ -1263,7 +1378,47 @@ export default function App() {
                     Select your advisory stream and pick an available calendar slot. Our lead regulatory consultants will conduct a confidential pre-review of your device specs.
                   </p>
                 </div>
-                <ConsultationForm />
+                <ConsultationForm initialNotes={prefilledNotes} initialService={prefilledService} />
+              </section>
+            )}
+
+
+            {/* ========================================================
+                ROUTE: REGULATORY RADAR (/regulatory-radar)
+                ======================================================== */}
+            {currentPath === '/regulatory-radar' && (
+              <section id="regulatory-radar-page" className="py-4 space-y-6">
+                <RegulatoryRadar />
+              </section>
+            )}
+
+
+            {/* ========================================================
+                ROUTE: DYNAMIC INFOGRAPHICS & PATHWAYS (/interactive-pathways)
+                ======================================================== */}
+            {currentPath === '/interactive-pathways' && (
+              <section id="interactive-pathways-page" className="py-4 space-y-6">
+                <DynamicInfographics />
+              </section>
+            )}
+
+
+            {/* ========================================================
+                ROUTE: STRATEGY PLAYBOOK GENERATOR (/strategy-generator)
+                ======================================================== */}
+            {currentPath === '/strategy-generator' && (
+              <section id="strategy-generator-page" className="py-4 space-y-6">
+                <StrategyGenerator onApplyToBooking={(scope) => handleStartBookingWithScope(scope, 'reg')} />
+              </section>
+            )}
+
+
+            {/* ========================================================
+                ROUTE: REGULATORY STATUTORY TRIAGE (/regulatory-triage)
+                ======================================================== */}
+            {currentPath === '/regulatory-triage' && (
+              <section id="regulatory-triage-page" className="py-4 space-y-6">
+                <RegulatoryTriage onApplyToBooking={(scope) => handleStartBookingWithScope(scope, 'reg')} />
               </section>
             )}
 
@@ -1300,12 +1455,46 @@ export default function App() {
                 ======================================================== */}
             {currentPath === '/case-studies' && (
               <>
+                {/* Print-Only Letterhead for Physical Document Sharing */}
+                <div className="print-only hidden pb-4 mb-6 border-b-2 border-brand-blue">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-display font-bold text-xl text-brand-blue tracking-tight">IQZYME MEDTECH</span>
+                        <span className="text-xs bg-brand-blue text-white px-2 py-0.5 rounded font-mono uppercase tracking-wider">Client Dossiers</span>
+                      </div>
+                      <p className="text-xs text-brand-dusk font-medium mt-1">
+                        Global Regulatory Approvals, Turnkey Infrastructure & Clinical Evidence Portfolio
+                      </p>
+                      <p className="text-[10px] text-brand-dusk/80 font-mono">
+                        Classification: Verified Client Case Studies & Statutory Clearance Records
+                      </p>
+                    </div>
+                    <div className="text-right text-xs text-brand-dusk">
+                      <p className="font-bold text-brand-blue">Verified Case Portfolio</p>
+                      <p className="text-[10px]">Date: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                      <p className="text-[10px] font-mono text-brand-dusk/70">Doc Ref: IQZ-CASE-DOSSIER</p>
+                    </div>
+                  </div>
+                </div>
+
                 <section id="case-studies-header" className="max-w-3xl mx-auto text-center space-y-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-brand-topaz">Client Success Dossiers</span>
                   <h2 className="font-display font-medium text-3xl md:text-4xl text-brand-blue">Proven Regulatory Approval Tracks</h2>
                   <p className="text-sm text-brand-dusk leading-relaxed">
                     Explore detailed analyses of orthopedic implant registrations, molecular diagnostic CE certifications, and search visibility overhauls conducted by IQzyme.
                   </p>
+                  <div className="no-print pt-2 flex justify-center">
+                    <button
+                      id="print-case-studies-btn"
+                      onClick={() => window.print()}
+                      className="px-4 py-2 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-lg text-xs font-semibold flex items-center gap-2 transition cursor-pointer shadow-xs"
+                      title="Print or Export Case Studies Dossier"
+                    >
+                      <Printer size={15} className="text-[#00C4B7]" />
+                      <span>Print Case Studies Dossier</span>
+                    </button>
+                  </div>
                 </section>
 
                 {/* Block 2: Featured Success Story */}
@@ -1346,6 +1535,17 @@ export default function App() {
                     ))}
                   </div>
                 </section>
+
+                {/* Print-Only Document Footer for Physical Sharing */}
+                <div className="print-only hidden pt-6 mt-8 border-t border-brand-cloudy/40 text-center text-[9pt] text-brand-dusk space-y-1">
+                  <p className="font-semibold text-brand-blue">
+                    IQzyme Medtech Pvt. Ltd. — Medical Device Regulatory Affairs & Clinical Strategy
+                  </p>
+                  <p>Cochin HQ • New Delhi • Bangalore • Stockholm, Sweden • www.iqzymemedtech.com</p>
+                  <p className="text-[8pt] text-brand-dusk/70">
+                    This dossier was generated for authorized physical document sharing and executive review.
+                  </p>
+                </div>
               </>
             )}
 

@@ -30,10 +30,14 @@ import {
   Loader2, 
   Compass,
   AlertCircle,
-  FileDown
+  FileDown,
+  Sparkles,
+  LayoutDashboard
 } from 'lucide-react';
+import LivingClientDashboard from './LivingClientDashboard';
 
 export default function FirebaseAuthPanel() {
+  const [showDemoTelemetry, setShowDemoTelemetry] = useState<boolean>(false);
   const { 
     currentUser, 
     userProfile, 
@@ -206,41 +210,81 @@ export default function FirebaseAuthPanel() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white border border-[#ACBDD3]/30 rounded-xl overflow-hidden shadow-md">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       {!currentUser ? (
-        // ==========================================
-        // AUTHENTICATION SCREEN (LOGIN / REGISTER / FORGOT)
-        // ==========================================
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Accent Side Column */}
-          <div className="bg-[#2D3A55] text-white p-8 md:p-12 flex flex-col justify-between space-y-8">
-            <div className="space-y-4">
-              <span className="text-[10px] font-bold font-mono tracking-widest uppercase text-brand-pear bg-brand-pear/10 px-2 py-1 rounded">
-                IQzyme Client Portal
-              </span>
-              <h3 className="font-display font-medium text-2xl leading-snug">
-                Access Regulatory Vault & Action Plans
-              </h3>
-              <p className="text-xs text-brand-cloudy leading-relaxed">
-                Log in to coordinate your SUGAM filings, monitor audit progress, download ISO 13485 gap reports, and collaborate securely with senior medical advisers.
-              </p>
+        showDemoTelemetry ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-brand-cloudy/30 shadow-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase text-[#00C4B7] bg-[#00C4B7]/10 px-2.5 py-1 rounded">
+                  Interactive Client Simulation Mode
+                </span>
+                <span className="text-xs text-brand-dusk hidden sm:inline">
+                  Exploring real-time dossier tracking and live approval predictions
+                </span>
+              </div>
+              <button
+                onClick={() => setShowDemoTelemetry(false)}
+                className="px-4 py-1.5 bg-brand-blue hover:bg-brand-dusk text-white text-xs font-bold rounded-lg transition cursor-pointer"
+              >
+                Return to Enterprise Login
+              </button>
             </div>
-            
-            <div className="space-y-3 text-xs text-brand-cloudy pt-6 border-t border-brand-dusk/30">
-              <div className="flex items-center gap-2">
-                <span className="text-brand-pear font-bold">✓</span> Secure Firebase Environment
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-brand-pear font-bold">✓</span> Real-Time Advisory Scheduling
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-brand-pear font-bold">✓</span> Encrypted Technical File Uploads
-              </div>
-            </div>
+            <LivingClientDashboard 
+              userEmail="demo.innovator@medtech-preview.com" 
+              companyName="CardioVascular Biosystems Ltd" 
+            />
           </div>
+        ) : (
+          // ==========================================
+          // AUTHENTICATION SCREEN (LOGIN / REGISTER / FORGOT)
+          // ==========================================
+          <div className="bg-white border border-[#ACBDD3]/30 rounded-xl overflow-hidden shadow-md">
+            {/* Top Discovery Bar for prospective clients */}
+            <div className="bg-brand-sand/50 border-b border-brand-cloudy/30 px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <span className="text-brand-blue font-medium flex items-center gap-1.5">
+                <Sparkles size={13} className="text-[#00C4B7]" />
+                Want to preview the living client experience before signing up?
+              </span>
+              <button
+                onClick={() => setShowDemoTelemetry(true)}
+                className="font-bold text-[#00C4B7] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <LayoutDashboard size={13} />
+                <span>Launch Interactive Client Dashboard Demo</span>
+              </button>
+            </div>
 
-          {/* Form Side Column */}
-          <div className="p-8 md:p-12 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {/* Accent Side Column */}
+              <div className="bg-[#2D3A55] text-white p-8 md:p-12 flex flex-col justify-between space-y-8">
+                <div className="space-y-4">
+                  <span className="text-[10px] font-bold font-mono tracking-widest uppercase text-brand-pear bg-brand-pear/10 px-2 py-1 rounded">
+                    IQzyme Client Portal
+                  </span>
+                  <h3 className="font-display font-medium text-2xl leading-snug">
+                    Access Regulatory Vault & Action Plans
+                  </h3>
+                  <p className="text-xs text-brand-cloudy leading-relaxed">
+                    Log in to coordinate your SUGAM filings, monitor audit progress, download ISO 13485 gap reports, and collaborate securely with senior medical advisers.
+                  </p>
+                </div>
+                
+                <div className="space-y-3 text-xs text-brand-cloudy pt-6 border-t border-brand-dusk/30">
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-pear font-bold">✓</span> Secure Firebase Environment
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-pear font-bold">✓</span> Real-Time Advisory Scheduling
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-pear font-bold">✓</span> Encrypted Technical File Uploads
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Side Column */}
+              <div className="p-8 md:p-12 space-y-6">
             <div className="text-center md:text-left space-y-1">
               <h4 className="font-display font-bold text-lg text-brand-blue">
                 {showForgot ? 'Reset Password' : isRegister ? 'Register Enterprise Account' : 'Partner Sign In'}
@@ -454,10 +498,12 @@ export default function FirebaseAuthPanel() {
             )}
           </div>
         </div>
-      ) : (
-        // ==========================================
-        // SECURE ADVISORY CLIENT PORTAL (AUTHENTICATED)
-        // ==========================================
+      </div>
+    )
+  ) : (
+    // ==========================================
+    // SECURE ADVISORY CLIENT PORTAL (AUTHENTICATED)
+    // ==========================================
         <div className="flex flex-col">
           {/* Top Header Row */}
           <div className="bg-[#2D3A55] text-white p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -486,9 +532,16 @@ export default function FirebaseAuthPanel() {
             </button>
           </div>
 
-          <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Personal Profile & Storage Upload Vault */}
-            <div className="lg:col-span-1 space-y-6">
+          <div className="p-6 md:p-8 space-y-8">
+            {/* Living Client Regulatory Telemetry & Dynamic Readiness Dashboard */}
+            <LivingClientDashboard 
+              userEmail={currentUser.email || undefined} 
+              companyName={userProfile?.companyName || undefined} 
+            />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4 border-t border-brand-cloudy/20">
+              {/* Left Column: Personal Profile & Storage Upload Vault */}
+              <div className="lg:col-span-1 space-y-6">
               {/* Profile Card */}
               <div className="bg-[#FAF9F5]/40 border border-brand-cloudy/20 rounded-xl p-5 space-y-4">
                 <h4 className="font-display font-bold text-sm text-brand-blue border-b border-brand-cloudy/20 pb-2 flex items-center gap-2">
@@ -664,7 +717,8 @@ export default function FirebaseAuthPanel() {
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
 }

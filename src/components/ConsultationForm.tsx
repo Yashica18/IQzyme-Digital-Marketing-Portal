@@ -23,10 +23,15 @@ const TIME_SLOTS = [
   '16:00 - 17:00 IST'
 ];
 
-export default function ConsultationForm() {
+interface ConsultationFormProps {
+  initialNotes?: string;
+  initialService?: string;
+}
+
+export default function ConsultationForm({ initialNotes = '', initialService = '' }: ConsultationFormProps) {
   const { currentUser, userProfile } = useAuth();
-  const [step, setStep] = useState<number>(1);
-  const [selectedService, setSelectedService] = useState<string>('');
+  const [step, setStep] = useState<number>(initialService ? 2 : 1);
+  const [selectedService, setSelectedService] = useState<string>(initialService || '');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedSlot, setSelectedSlot] = useState<string>('');
   
@@ -36,7 +41,18 @@ export default function ConsultationForm() {
   const [phone, setPhone] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
   const [urgency, setUrgency] = useState<string>('Standard (Within 2-3 weeks)');
-  const [notes, setNotes] = useState<string>('');
+  const [notes, setNotes] = useState<string>(initialNotes || '');
+
+  // Update notes or service if initial props change
+  useEffect(() => {
+    if (initialNotes) {
+      setNotes(initialNotes);
+    }
+    if (initialService) {
+      setSelectedService(initialService);
+      setStep(2);
+    }
+  }, [initialNotes, initialService]);
 
   const [formError, setFormError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

@@ -1,6 +1,6 @@
 {
   "name": "IQzyme Digital & Compliance Portal",
-  "description": "Explore IQzyme's innovative digital marketing and compliance solutions tailored for rapid regulatory growth, CDSCO licensing, CE marking, Quality management and stellar visibility.",
+  "description": "Living regulatory intelligence platform and compliance portal for MedTech & IVD enterprises. Features real-time regulatory radar, AI statutory triage, regenerable submission pathways, ISO 14971 risk heatmaps, and personalized client telemetry dashboards.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -7,7 +7,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, Filter, Download, Trash2, Calendar, Mail, FileText, 
   CheckCircle, Clock, XCircle, AlertCircle, LogOut, Check, ChevronDown, UserCheck,
-  Plus, Pencil, Image, Eye, EyeOff, BookOpen, AlertTriangle, CloudUpload
+  Plus, Pencil, Image, Eye, EyeOff, BookOpen, AlertTriangle, CloudUpload,
+  ShieldCheck, Activity, BarChart2
 } from 'lucide-react';
 import { 
   collection, getDocs, doc, updateDoc, deleteDoc, orderBy, query, serverTimestamp, addDoc, where 
@@ -16,6 +17,8 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, auth, storage } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { BlogPost } from '../types';
+import QualityControlReviewQueue from './QualityControlReviewQueue';
+import ObservabilityDashboard from './ObservabilityDashboard';
 
 // Define the Firestore error handling types & helper according to the Firebase Integration Skill
 enum OperationType {
@@ -101,7 +104,7 @@ export default function AdminDashboard() {
   const [sessionDuration, setSessionDuration] = useState(0);
 
   // Tabs
-  const [activeTab, setActiveTab] = useState<'consultations' | 'enquiries' | 'newsletter' | 'blogs'>('consultations');
+  const [activeTab, setActiveTab] = useState<'consultations' | 'enquiries' | 'newsletter' | 'blogs' | 'reviewQueue' | 'observability'>('consultations');
 
   // Firestore Data State
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
@@ -850,14 +853,14 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Database Tab Controls & Action Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         {/* Horizontal Navigation Tabs */}
-        <div className="flex bg-white p-1 rounded-lg border border-brand-cloudy/30 w-full md:w-auto">
+        <div className="flex flex-wrap bg-white p-1 rounded-lg border border-brand-cloudy/30 gap-1 w-full lg:w-auto">
           <button 
             onClick={() => { setActiveTab('consultations'); setSearchQuery(''); }}
-            className={`flex-1 md:flex-none px-4 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
               activeTab === 'consultations' 
-                ? 'bg-[#2D3A55] text-white' 
+                ? 'bg-[#2D3A55] text-white shadow-sm' 
                 : 'text-brand-dusk hover:text-[#2D3A55]'
             }`}
           >
@@ -865,9 +868,9 @@ export default function AdminDashboard() {
           </button>
           <button 
             onClick={() => { setActiveTab('enquiries'); setSearchQuery(''); }}
-            className={`flex-1 md:flex-none px-4 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
               activeTab === 'enquiries' 
-                ? 'bg-[#2D3A55] text-white' 
+                ? 'bg-[#2D3A55] text-white shadow-sm' 
                 : 'text-brand-dusk hover:text-[#2D3A55]'
             }`}
           >
@@ -875,9 +878,9 @@ export default function AdminDashboard() {
           </button>
           <button 
             onClick={() => { setActiveTab('newsletter'); setSearchQuery(''); }}
-            className={`flex-1 md:flex-none px-4 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
               activeTab === 'newsletter' 
-                ? 'bg-[#2D3A55] text-white' 
+                ? 'bg-[#2D3A55] text-white shadow-sm' 
                 : 'text-brand-dusk hover:text-[#2D3A55]'
             }`}
           >
@@ -885,37 +888,83 @@ export default function AdminDashboard() {
           </button>
           <button 
             onClick={() => { setActiveTab('blogs'); setSearchQuery(''); }}
-            className={`flex-1 md:flex-none px-4 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
               activeTab === 'blogs' 
-                ? 'bg-[#2D3A55] text-white' 
+                ? 'bg-[#2D3A55] text-white shadow-sm' 
                 : 'text-brand-dusk hover:text-[#2D3A55]'
             }`}
           >
             Blog CMS ({blogs.length})
           </button>
+          <button 
+            onClick={() => { setActiveTab('reviewQueue'); setSearchQuery(''); }}
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'reviewQueue' 
+                ? 'bg-[#00C4B7] text-white shadow-sm' 
+                : 'text-brand-blue hover:text-[#00C4B7] hover:bg-[#00C4B7]/10'
+            }`}
+          >
+            <ShieldCheck size={14} />
+            <span>QC Review Queue</span>
+            <span className={`px-1.5 py-0.5 text-[9px] font-mono rounded font-bold ${
+              activeTab === 'reviewQueue' ? 'bg-white/20 text-white' : 'bg-brand-blue/10 text-brand-blue'
+            }`}>
+              Claude
+            </span>
+          </button>
+          <button 
+            onClick={() => { setActiveTab('observability'); setSearchQuery(''); }}
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'observability' 
+                ? 'bg-[#99CE43] text-brand-blue shadow-sm font-extrabold' 
+                : 'text-brand-blue hover:text-[#86b53b] hover:bg-[#99CE43]/15'
+            }`}
+          >
+            <Activity size={14} />
+            <span>Observability &amp; Costs</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C4B7] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00C4B7]"></span>
+            </span>
+          </button>
         </div>
 
-        {/* Action Button: Export to CSV */}
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={fetchAllData}
-            className="px-4 h-9 bg-brand-blue/5 border border-brand-blue/15 text-brand-blue text-xs font-semibold uppercase tracking-wider rounded hover:bg-brand-blue/10 transition-all flex items-center gap-1.5 cursor-pointer"
-            disabled={loadingData}
-          >
-            {loadingData ? 'Syncing...' : 'Reload Logs'}
-          </button>
-          <button 
-            onClick={handleExportCSV}
-            className="px-4 h-9 bg-[#00C4B7] text-white text-xs font-semibold uppercase tracking-wider rounded shadow-sm hover:bg-[#00b0a4] transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <Download size={13} />
-            <span>Export to CSV</span>
-          </button>
-        </div>
+        {/* Action Button: Export to CSV (for CRM tabs) */}
+        {activeTab !== 'reviewQueue' && activeTab !== 'observability' && (
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={fetchAllData}
+              className="px-4 h-9 bg-brand-blue/5 border border-brand-blue/15 text-brand-blue text-xs font-semibold uppercase tracking-wider rounded hover:bg-brand-blue/10 transition-all flex items-center gap-1.5 cursor-pointer"
+              disabled={loadingData}
+            >
+              {loadingData ? 'Syncing...' : 'Reload Logs'}
+            </button>
+            <button 
+              onClick={handleExportCSV}
+              className="px-4 h-9 bg-[#00C4B7] text-white text-xs font-semibold uppercase tracking-wider rounded shadow-sm hover:bg-[#00b0a4] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Download size={13} />
+              <span>Export to CSV</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Real-time search and secondary filters bar */}
-      <div className="bg-white border border-brand-cloudy/30 p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+      {/* Render QC Review Queue Tab */}
+      {activeTab === 'reviewQueue' && (
+        <QualityControlReviewQueue />
+      )}
+
+      {/* Render Observability Tab */}
+      {activeTab === 'observability' && (
+        <ObservabilityDashboard />
+      )}
+
+      {/* CRM Tabs Content (Consultations, Enquiries, Newsletter, Blogs) */}
+      {activeTab !== 'reviewQueue' && activeTab !== 'observability' && (
+        <>
+          {/* Real-time search and secondary filters bar */}
+          <div className="bg-white border border-brand-cloudy/30 p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:max-w-md">
           <Search size={14} className="absolute left-3.5 top-3.5 text-brand-cloudy" />
           <input 
@@ -1336,6 +1385,8 @@ export default function AdminDashboard() {
           </>
         )}
       </div>
+    </>
+  )}
 
       {/* Delete Record Confirmation Dialog Modal */}
       {recordToDelete && (

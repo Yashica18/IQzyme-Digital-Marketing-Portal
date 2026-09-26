@@ -286,6 +286,42 @@ export const ROUTES: RouteInfo[] = [
     }
   },
   {
+    path: '/regulatory-radar',
+    label: 'Regulatory Radar',
+    category: 'main',
+    meta: {
+      title: 'Live Regulatory Radar & Global Intelligence Watchdog | IQZYME',
+      description: 'Continuously updated regulatory intelligence, FDA guidance, EU MDR transitions, CDSCO updates, and AI impact analysis for medtech innovators.'
+    }
+  },
+  {
+    path: '/interactive-pathways',
+    label: 'Dynamic Pathways & Risk Heatmap',
+    category: 'resources',
+    meta: {
+      title: 'Dynamic Submission Pathways & ISO 14971 Risk Heatmap | IQZYME',
+      description: 'Regenerable regulatory infographics, comparative submission Gantt charts, ISO 14971 ALARP risk matrices, and SaMD Rule 11 decision trees.'
+    }
+  },
+  {
+    path: '/strategy-generator',
+    label: 'Strategy Playbook Generator',
+    category: 'resources',
+    meta: {
+      title: 'On-Demand Medical Device Regulatory Strategy Playbook | IQZYME',
+      description: 'Configure your product profile to generate custom multi-jurisdiction classification, testing roadmaps, and audit gap analyses on demand.'
+    }
+  },
+  {
+    path: '/regulatory-triage',
+    label: 'Statutory Triage Navigator',
+    category: 'resources',
+    meta: {
+      title: 'Front-Door Medical Device Statutory Triage | IQZYME',
+      description: 'Instant 3-question statutory triage engine to determine your device class, statutory fees, and approval timelines.'
+    }
+  },
+  {
     path: '/client-portal',
     label: 'Client Portal',
     category: 'main',

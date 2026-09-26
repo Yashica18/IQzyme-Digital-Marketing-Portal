@@ -6,5 +6,7 @@
   "firestoreDatabaseId": "ai-studio-iqzymedigitalmar-79bad091-bc05-486e-9abd-cdb187dc6199",
   "storageBucket": "quadratic-aquifer-fwjkk.firebasestorage.app",
   "messagingSenderId": "148328398597",
-  "measurementId": ""
+  "measurementId": "",
+  "oAuthClientId": "148328398597-uf83fd3augo28cftm0htnrc6f4og7enu.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
 }

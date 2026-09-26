@@ -199,5 +199,30 @@ service cloud.firestore {
       allow create: if isSignedIn() && isValidTestimonial(incoming());
       allow update, delete: if isAdmin();
     }
+
+    // 9. Generation Telemetry Logs
+    match /generationLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // 10. Regulatory Review Queue
+    match /regulatoryReviewQueue/{itemId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // 11. System Directives (Learned Feedback Rules)
+    match /systemDirectives/{directiveId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 12. Regulatory Feedback Loops
+    match /regulatoryFeedback/{feedbackId} {
+      allow read: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
   }
 }
